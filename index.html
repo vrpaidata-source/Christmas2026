@@ -91,7 +91,7 @@ html,body{
  box-shadow:0 2px 10px #0007
 }
 
-/* SENDER NAME GOLDEN MOVING ANIMATION */
+/* SENDER NAME - WELCOME SCREEN ONLY */
 #senderTicker{
  position:absolute;
  z-index:15;
@@ -369,12 +369,11 @@ let shareUrl="";
 let musicOn=true;
 let shareAttempted=false;
 
-/* SENDER NAME MOVING ANIMATION */
+/* SENDER NAME - WELCOME SCREEN ONLY */
 function showSenderTicker(name){
  if(!name)return;
 
- $("senderTickerText").textContent=
-  "🎄 அன்புடன் "+name+" ✨உங்களுக்கு ஒரு இனிய கிறிஸ்துமஸ் பரிசை அனுப்பியுள்ளார்";
+ $("senderTickerText").textContent="✨ "+name+" ✨";
 
  $("senderTicker").style.display="block";
 }
@@ -500,6 +499,9 @@ async function requestMotion(){
 /* START CHRISTMAS MAGIC */
 $("enterBtn").onclick=async()=>{
 
+ /* HIDE SENDER NAME AFTER WELCOME SCREEN */
+ $("senderTicker").style.display="none";
+
  await startMusic();
 
  $("welcome").classList.add("hidden");
@@ -593,8 +595,7 @@ $("makeLink").onclick=()=>{
 
  shareAttempted=false;
 
- /* SHOW NEW SENDER NAME */
- showSenderTicker(name);
+ /* DO NOT SHOW TICKER FOR LINK CREATOR */
 
  $("makeLink").classList.add("hidden");
  $("nameScreen").classList.add("hidden");
