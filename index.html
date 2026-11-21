@@ -156,6 +156,7 @@ h1{
 }
 
 #wishText{
+ display:none;
  font:17px/1.6 Arial,sans-serif;
  color:#fff;
  text-shadow:0 2px 9px #001;
@@ -305,9 +306,10 @@ input{
   <div>
    <div class="brand">VRPAIData PRESENTS</div>
    <h1>Merry Christmas 🎄</h1>
-   <div id="wishText">
-    A sparkling Christmas surprise is waiting for you…
-   </div>
+
+   <!-- WELCOME MESSAGE HIDDEN -->
+   <div id="wishText" style="display:none;"></div>
+
   </div>
 
   <button id="enterBtn">ENTER CHRISTMAS MAGIC ✨</button>
@@ -619,7 +621,6 @@ function shareText(name){
 
 அன்புடன்,
 ${name}`;
-;
 }
 
 /* FINAL SCREEN AND AUTO SHARE */
