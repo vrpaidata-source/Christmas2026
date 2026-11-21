@@ -40,7 +40,7 @@ html,body{
  position:absolute;
  inset:0;
  background:linear-gradient(#06152d33,#06152d66),
- url('winter-wonderland.png') center/cover no-repeat
+ url('og-christmas.png') center/cover no-repeat
 }
 
 #snow{
@@ -373,7 +373,7 @@ let shareAttempted=false;
 function showSenderTicker(name){
  if(!name)return;
 
- $("senderTickerText").textContent="✨ "+name+" ✨";
+ $("senderTickerText").textContent="✨ "+name+" உங்களுக்கு ஒரு இனிய கிறிஸ்துமஸ் பரிசை அனுப்பியுள்ளார்! ✨";
 
  $("senderTicker").style.display="block";
 }
@@ -384,7 +384,7 @@ if(incoming){
   `${incoming} உங்களுக்கு ஒரு இனிய கிறிஸ்துமஸ் பரிசை அனுப்பியுள்ளார்!`;
 
  $("namePrompt").textContent=
-  `இந்த கிறிஸ்துமஸ் பரிசை ${incoming} அன்புடன் அனுப்பியுள்ளார்.`;
+  `இந்த கிறிஸ்துமஸ் பரிசை ${incoming} அன்புடன் அனுப்பியுள்ளார்.நீங்களும் உங்கள் நண்பர்களுக்கு அனுப்புங்கள்.`;
 
  showSenderTicker(incoming);
 }
