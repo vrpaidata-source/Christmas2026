@@ -110,7 +110,7 @@ const firebaseConfig = {
 
 
 const app=initializeApp(firebaseConfig);
-const db=getFirestore(app);
+const db=getFirestore(app, "(default)");
 const viewerRef=doc(db,"stats","christmas2026");
 const $=id=>document.getElementById(id);
 const video=$("sceneVideo"),music=$("bgMusic");
