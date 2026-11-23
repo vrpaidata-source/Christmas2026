@@ -101,9 +101,15 @@ async function countEnterTouch(){
    tx.update(viewerRef,{viewers:Number(snap.data().viewers||0)+1});
   });
  }catch(err){
-  viewerCounted=false;console.error("Viewer counter error:",err);
-  toast("Viewer Count update ஆகவில்லை. Firestore Rules / Document சரிபார்க்கவும்.");
- }finally{$("enterBtn").disabled=false;}
+  viewerCounted = false;
+  console.error("Firebase Viewer Error:", err);
+
+  toast(
+    "Firebase Error: " +
+    (err.code || "unknown") +
+    " - " +
+    (err.message || "Unknown error")
+  );
 }
 function showSenderTicker(name){
  if(!name)return;
