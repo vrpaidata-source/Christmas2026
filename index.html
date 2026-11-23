@@ -95,18 +95,28 @@ input{width:min(88vw,320px);padding:14px 16px;border-radius:10px;border:1px soli
  <div id="toast"></div>
 </div>
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, onSnapshot, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore,
+  doc,
+  onSnapshot,
+  runTransaction
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD9uMhQ_Ibx479TGouOfiwdJfDOmfwFxco",
-  authDomain: "vrpaidata-christmas-2026.firebaseapp.com",
-  projectId: "vrpaidata-christmas-2026",
-  storageBucket: "vrpaidata-christmas-2026.firebasestorage.app",
-  messagingSenderId: "276446457002",
-  appId: "1:276446457002:web:ee0a2604ac63e8f52cf4d3"
+  apiKey: "AIzaSyDDuKCuS9g82V2lUw78O8pCDEJexCITqYw",
+  authDomain: "vrpaidata-christmas-2026-1f712.firebaseapp.com",
+  projectId: "vrpaidata-christmas-2026-1f712",
+  storageBucket: "vrpaidata-christmas-2026-1f712.firebasestorage.app",
+  messagingSenderId: "835756614230",
+  appId: "1:835756614230:web:877e4d0e2d8525c40c51f7"
 };
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const viewerRef = doc(db, "stats", "christmas2026");
+
 
 
 const app=initializeApp(firebaseConfig);
