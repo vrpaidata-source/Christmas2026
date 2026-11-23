@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#07172f">
+<title>Christmas Magic 2026 | Admin</title>
+<style>
+:root{color-scheme:dark;--bg:#06152d;--panel:#102b4b;--line:#7ccfff55;--gold:#ffe5a0;--ice:#bcecff;--muted:#b9cde0}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 0,#17466e 0,#071a35 45%,#041126 100%);color:#f5fbff;font-family:Arial,sans-serif;padding:24px}
+.wrap{width:min(100%,760px);margin:0 auto}
+header{text-align:center;margin:12px 0 26px}
+.brand{font-size:12px;letter-spacing:4px;color:var(--gold);font-weight:bold}
+h1{font-family:Georgia,serif;color:var(--gold);font-size:clamp(27px,6vw,40px);margin:10px 0}
+.sub{color:var(--muted);font-size:14px}
+.card{background:linear-gradient(145deg,#12365aee,#071a35f5);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 12px 35px #0005;margin:16px 0}
+h2{font-size:18px;margin:0 0 16px;color:var(--ice)}
+label{display:block;font-size:13px;color:var(--muted);margin:12px 0 6px}
+input{width:100%;padding:13px 14px;border-radius:10px;border:1px solid #8dcfff66;background:#06152d;color:white;font-size:16px}
+button{border:0;border-radius:999px;padding:12px 18px;font-weight:bold;cursor:pointer}
+.primary{background:linear-gradient(135deg,#fff1b9,#dba53b);color:#351500}
+.secondary{background:#17466e;color:#fff;border:1px solid var(--line)}
+.danger{background:#7e2937;color:white}
+button:disabled{opacity:.55;cursor:not-allowed}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.error{color:#ffb8b8;background:#67233366;border:1px solid #ff8b8b66;padding:10px;border-radius:9px;margin-top:12px;display:none;white-space:pre-wrap;font-size:13px}
+.success{color:#b8ffd0}
+.hidden{display:none!important}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.stat{background:#06152d99;border:1px solid var(--line);border-radius:14px;padding:18px}
+.stat small{display:block;color:var(--muted);font-size:12px;letter-spacing:1px}
+.stat strong{display:block;color:white;font-size:clamp(28px,7vw,42px);margin-top:8px;font-variant-numeric:tabular-nums}
+.status{font-size:13px;color:var(--muted);margin-top:12px}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.note{font-size:12px;line-height:1.55;color:var(--muted)}
+footer{text-align:center;color:#8faac4;font-size:12px;padding:18px}
+@media(max-width:480px){body{padding:15px}.card{padding:17px}.stats{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="brand">VRPAIData PRESENTS</div>
+  <h1>🎄 Christmas Magic Admin</h1>
+  <div class="sub">Secure administration dashboard</div>
+</header>
+
+<section id="loginCard" class="card">
+  <h2>🔐 Admin Login</h2>
+  <form id="loginForm">
+    <label for="email">Admin email</label>
+    <input id="email" type="email" autocomplete="username" required placeholder="admin@example.com">
+    <label for="password">Password</label>
+    <input id="password" type="password" autocomplete="current-password" required placeholder="Enter password">
+    <div class="actions"><button class="primary" id="loginBtn" type="submit">Login</button></div>
+  </form>
+  <div id="loginError" class="error"></div>
+</section>
+
+<section id="dashboard" class="hidden">
+  <div class="card">
+    <div class="topline">
+      <div><h2 style="margin-bottom:5px">📊 Viewer Overview</h2><div class="sub" id="adminEmail"></div></div>
+      <button class="secondary" id="logoutBtn">Logout</button>
+    </div>
+    <div class="stats" style="margin-top:18px">
+      <div class="stat"><small>TOTAL VIEWERS</small><strong id="viewerCount">—</strong></div>
+      <div class="stat"><small>COUNTER STATUS</small><strong style="font-size:24px" id="counterStatus">Connecting</strong></div>
+    </div>
+    <div class="status" id="lastUpdated">Waiting for Firestore…</div>
+    <div id="dashboardError" class="error"></div>
+  </div>
+
+  <div class="card">
+    <h2>🛠️ Counter Management</h2>
+    <p class="note">Resetting changes the shared public viewer count to zero. This action cannot be undone.</p>
+    <div class="actions">
+      <button class="danger" id="resetBtn">Reset Viewer Count to 0</button>
+    </div>
+    <div id="resetMessage" class="status"></div>
+  </div>
+
+  <div class="card">
+    <h2>🔑 Change Password</h2>
+    <p class="note">For security, Firebase may require you to sign in again before changing your password.</p>
+    <form id="passwordForm">
+      <label for="newPassword">New password (at least 6 characters)</label>
+      <input id="newPassword" type="password" minlength="6" autocomplete="new-password" required>
+      <label for="confirmPassword">Confirm new password</label>
+      <input id="confirmPassword" type="password" minlength="6" autocomplete="new-password" required>
+      <div class="actions"><button class="secondary" type="submit" id="changePasswordBtn">Update Password</button></div>
+    </form>
+    <div id="passwordMessage" class="status"></div>
+  </div>
+</section>
+<footer>VRPAIData • Christmas Magic 2026</footer>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut,
+  updatePassword
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore, doc, onSnapshot, updateDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDDuKCuS9g82V2lUw78O8pCDEJexCITqYw",
+  authDomain: "vrpaidata-christmas-2026-1f712.firebaseapp.com",
+  projectId: "vrpaidata-christmas-2026-1f712",
+  storageBucket: "vrpaidata-christmas-2026-1f712.firebasestorage.app",
+  messagingSenderId: "835756614230",
+  appId: "1:835756614230:web:877e4d0e2d8525c40c51f7"
+};
+
+const ADMIN_UID = "OFiI54HwLNeXVOZeqFuVbudi7Lf1";
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const statsRef = doc(db, "stats", "christmas2026");
+const $ = id => document.getElementById(id);
+let unsubscribeStats = null;
+
+function showError(id, message) {
+  const el = $(id); el.textContent = message; el.style.display = "block";
+}
+function clearMessage(id) {
+  const el = $(id); el.textContent = ""; el.style.display = "none";
+}
+function showDashboard(user) {
+  $("loginCard").classList.add("hidden");
+  $("dashboard").classList.remove("hidden");
+  $("adminEmail").textContent = user.email || "Authenticated admin";
+  clearMessage("dashboardError");
+  if (unsubscribeStats) unsubscribeStats();
+  unsubscribeStats = onSnapshot(statsRef, snap => {
+    if (!snap.exists()) {
+      $("viewerCount").textContent = "Missing";
+      $("counterStatus").textContent = "Document missing";
+      return;
+    }
+    const count = Number(snap.data().viewers || 0);
+    $("viewerCount").textContent = count.toLocaleString("en-IN");
+    $("counterStatus").textContent = "Live";
+    $("lastUpdated").textContent = "Live updates connected • " + new Date().toLocaleString();
+  }, err => {
+    $("counterStatus").textContent = "Error";
+    showError("dashboardError", "Firestore: " + (err.code || "") + " " + err.message);
+  });
+}
+
+$("loginForm").addEventListener("submit", async e => {
+  e.preventDefault(); clearMessage("loginError");
+  $("loginBtn").disabled = true;
+  try {
+    await signInWithEmailAndPassword(auth, $("email").value.trim(), $("password").value);
+  } catch (err) {
+    showError("loginError", (err.code || "login-error") + ": " + err.message);
+  } finally {
+    $("loginBtn").disabled = false;
+  }
+});
+
+onAuthStateChanged(auth, async user => {
+  if (!user) {
+    if (unsubscribeStats) { unsubscribeStats(); unsubscribeStats = null; }
+    $("dashboard").classList.add("hidden");
+    $("loginCard").classList.remove("hidden");
+    return;
+  }
+  if (user.uid !== ADMIN_UID) {
+    await signOut(auth);
+    showError("loginError", "இந்த account-க்கு Admin அனுமதி இல்லை.");
+    return;
+  }
+  showDashboard(user);
+});
+
+$("logoutBtn").addEventListener("click", async () => {
+  await signOut(auth);
+});
+
+$("resetBtn").addEventListener("click", async () => {
+  const ok = confirm("மொத்த Viewer Count-ஐ 0 ஆக Reset செய்யவா? இந்த மாற்றத்தை மீட்டெடுக்க முடியாது.");
+  if (!ok) return;
+  $("resetBtn").disabled = true; $("resetMessage").textContent = "Reset செய்கிறது…";
+  try {
+    await updateDoc(statsRef, { viewers: 0 });
+    $("resetMessage").textContent = "Viewer Count வெற்றிகரமாக 0 ஆக Reset செய்யப்பட்டது.";
+    $("resetMessage").classList.add("success");
+  } catch (err) {
+    $("resetMessage").textContent = "Reset தோல்வி: " + (err.code || "") + " " + err.message;
+  } finally {
+    $("resetBtn").disabled = false;
+  }
+});
+
+$("passwordForm").addEventListener("submit", async e => {
+  e.preventDefault(); $("passwordMessage").textContent = "";
+  const p1 = $("newPassword").value, p2 = $("confirmPassword").value;
+  if (p1 !== p2) { $("passwordMessage").textContent = "இரண்டு password-களும் ஒன்றாக இல்லை."; return; }
+  if (p1.length < 6) { $("passwordMessage").textContent = "குறைந்தது 6 characters வேண்டும்."; return; }
+  $("changePasswordBtn").disabled = true;
+  try {
+    if (!auth.currentUser || auth.currentUser.uid !== ADMIN_UID) throw new Error("Admin session இல்லை.");
+    await updatePassword(auth.currentUser, p1);
+    $("passwordMessage").textContent = "Password மாற்றப்பட்டது.";
+    $("passwordMessage").classList.add("success");
+    $("passwordForm").reset();
+  } catch (err) {
+    $("passwordMessage").textContent = "Password மாற்ற முடியவில்லை: " + (err.code || "") + " " + err.message;
+  } finally {
+    $("changePasswordBtn").disabled = false;
+  }
+});
+</script>
+</body>
+</html>
